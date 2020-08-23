@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block head %}
+<title>Post {{post.id}}</title>
+{% endblock %} {% block body %}
+<a class="btn btn-dark" href="{{url_for('home')}}">Back</a>
+<br />
+<p>
+  Posted by {% if post.author %} {{post.author}} {% else %} [Unknown] {%endif%}
+  on {{post.date}}
+</p>
+<hr />
+<h1>{{post.title}}</h1>
+<hr />
+<p>{{post.content}}</p>
+<hr />
+<p>Likes: {{post.likes}} Dislikes: {{post.dislikes}}</p>
+<div id="comment_section">
+  <button id="add-comment" class="btn btn-dark">Add Comment</button>
+  <hr />
+  {%for comment in comments%}
+  <h3>{{comment.content}}</h3>
+  <p>By {{comment.author}} @ {{comment.date}}</p>
+  <a href="{{url_for('delete_comment', id=comment.id)}}">Delete</a>
+  <a href="">
+    <button>Edit</button>
+  </a>
+  <hr />
+  {%endfor%}
+  <hr />
+</div>
+
+{% endblock %}

@@ -15,7 +15,11 @@
 </form>
 
 {%if feed%} {% for post in feed%}
-<div id="{{post.id}}">
+<div
+  id="{{post.id}}"
+  style="cursor: pointer;"
+  onclick="window.location='{{url_for('display_post', id=post.id)}}';"
+>
   <h1>{{post.title}}</h1>
   <p>{{post.content}}</p>
   {% if post.author %}
