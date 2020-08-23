@@ -2,11 +2,32 @@
 <title>Feed</title>
 {% endblock %} {% block body %}
 <h1>Your Feed</h1>
+<hr />
+<h1>Create Post</h1>
+<form action="/home" method="POST">
+  Title: <input type="text" name="title" id="title" />
+  <br />
+  Post: <input type="text" name="content" id="content" />
+  <br />
+  Author: <input type="text" name="author" id="author" />
+  <br />
+  <input type="submit" value="Create Post" />
+</form>
 
 {%if feed%} {% for post in feed%}
 <div id="{{post.id}}">
   <h1>{{post.title}}</h1>
   <p>{{post.content}}</p>
+  {% if post.author %}
+  <p>{{post.author}}</p>
+  {%else %}
+  <p>Unknown</p>
+  {%endif%}
+  <p>{{post.date}}</p>
+
+  <a href="/home/delete/{{post.id}}">Delete</a>
+  <a href="/home/edit/{{post.id}}">Edit</a>
+  <hr />
 </div>
 {%endfor%} {%else%}
 <h1>No Post in Feed</h1>
