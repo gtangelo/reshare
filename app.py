@@ -1,8 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+import secrets
+
+from forms import LoginUser, RegisterUser
+
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = secrets.token_hex(16)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -108,6 +114,25 @@ def display_post(id):
         comments = PostComments.query.filter_by(post_id=id).order_by(PostComments.date.desc()).all()
         return render_template('display_post.html', post=post, comments=comments)
 
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterUser()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}', 'success')
+        return redirect(url_for('home'))
+    return render_template('register.html', form=form)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginUser()
+    if form.validate_on_submit():
+        if form.username.data == 'admin' and form.username.data == 'admin':
+            flash('Admin Login', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login Failed', 'danger')
+    return render_template('login.html', form=form)
 
 @app.route('/settings')
 def settings():

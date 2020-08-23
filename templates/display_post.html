@@ -12,17 +12,23 @@
 <hr />
 <p>{{post.content}}</p>
 <hr />
-<p>Likes: {{post.likes}} Dislikes: {{post.dislikes}}</p>
+<div class="like-bar">
+  <button>Likes: {{post.likes}}</button>
+  <button>Dislikes: {{post.dislikes}}</button>
+</div>
 <div id="comment_section">
   <button id="add-comment" class="btn btn-dark">Add Comment</button>
   <hr />
   {%for comment in comments%}
+  <p>User: {{comment.author}}</p>
+  <p class="publish-date">{{comment.date}}</p>
   <h3>{{comment.content}}</h3>
-  <p>By {{comment.author}} @ {{comment.date}}</p>
-  <a href="{{url_for('delete_comment', id=comment.id)}}">Delete</a>
-  <a href="">
-    <button>Edit</button>
-  </a>
+  <div class="options" id="{{comment.author}}">
+    <a href="{{url_for('delete_comment', id=comment.id)}}">Delete</a>
+    <a href="">
+      <button>Edit</button>
+    </a>
+  </div>
   <hr />
   {%endfor%}
   <hr />

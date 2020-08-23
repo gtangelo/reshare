@@ -9,7 +9,6 @@
       integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
       crossorigin="anonymous"
     />
-    {% block head %} {% endblock %}
   </head>
   <body>
     <!-- Toolbar -->
@@ -30,14 +29,23 @@
             <a class="nav-link active" href="{{url_for('about')}}"
               >About <span class="sr-only"></span
             ></a>
-            <button id="login">Login</button>
+            <a class="nav-link active" href="{{url_for('login')}}"
+              >Login <span class="sr-only"></span
+            ></a>
+            <a class="nav-link active" href="{{url_for('register')}}"
+              >Sign Up <span class="sr-only"></span
+            ></a>
           </ul>
         </div>
       </div>
     </nav>
 
     <div class="container">
-      {% block body %} {% endblock %}
+      {%with messages = get_flashed_messages(with_categories=true)%} {%if
+      messages%} {%for category, message in messages%}
+      <div class="alert alert-{{category}}">{{message}}</div>
+      {%endfor%} {%endif%} {%endwith%} {% block head %} {% endblock %} {% block
+      body %} {% endblock %}
       <footer>Info Links:</footer>
     </div>
     <script
