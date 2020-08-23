@@ -1,0 +1,13 @@
+{% extends 'base.html' %} {% block head %}
+<title>Feed</title>
+{% endblock %} {% block body %}
+<h1>Your Feed</h1>
+
+{%if feed%} {% for post in feed%}
+<div id="{{post.id}}">
+  <h1>{{post.title}}</h1>
+  <p>{{post.content}}</p>
+</div>
+{%endfor%} {%else%}
+<h1>No Post in Feed</h1>
+{%endif%} {% endblock %}
