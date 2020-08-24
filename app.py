@@ -41,6 +41,15 @@ class PostComments(db.Model):
     def __repr__(self):
         return "Comment ID: " + str(self.id) + "Post ID: " + str(self.post_id)
 
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(50), nullable=False)
+    img_profile = db.Column(db.String(50), nullable=False, default='default.jpg')
+
+    def __repr__(self):
+        return "Username: " + str(self.username)
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -119,6 +128,11 @@ def display_post(id):
 def register():
     form = RegisterUser()
     if form.validate_on_submit():
+        user_username = request.form['username']
+        user_password = request.form['password']
+        new_user = Users(username = user_username, password = user_password)
+        db.session.add(new_user)
+        db.session.commit()
         flash(f'Account created for {form.username.data}', 'success')
         return redirect(url_for('home'))
     return render_template('register.html', form=form)
