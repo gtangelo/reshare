@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for, flash
-from app import app
+from app import app, db
 from app.models import FeedPost, PostComments, Users
 from app.forms import LoginUser, RegisterUser
 
