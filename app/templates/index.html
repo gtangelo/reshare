@@ -1,5 +1,33 @@
 {% extends 'base.html' %} {% block head %}
-<title>Home</title>
+<title>Feed</title>
 {% endblock %} {% block body %}
-<h1>Hello There</h1>
-{% endblock %}
+<h1>Popular Posts</h1>
+<hr />
+
+{%if feed%} {% for post in feed%}
+<div
+  id="{{post.id}}"
+  style="cursor: pointer;"
+  onclick="window.location='{{url_for('display_post', id=post.id)}}';"
+>
+  <h1>{{post.title}}</h1>
+  <p>{{post.content}}</p>
+  {% if post.author %}
+  <p>{{post.author}}</p>
+  {%else %}
+  <p>Unknown</p>
+  {%endif%}
+  <p class="publish-date">{{post.date}}</p>
+  {% if current_user.is_authenticated%}
+  <a href="/home/delete/{{post.id}}">Delete</a>
+  <a href="/home/edit/{{post.id}}">Edit</a>
+  {%endif%}
+</div>
+<div class="like-bar">
+  <button>Likes: {{post.likes}}</button>
+  <button>Dislikes: {{post.dislikes}}</button>
+</div>
+<hr />
+{%endfor%} {%else%}
+<h1>No Post Yet</h1>
+{%endif%} {% endblock %}

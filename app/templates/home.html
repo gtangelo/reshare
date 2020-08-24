@@ -9,8 +9,6 @@
   <br />
   Post: <input type="text" name="content" id="content" />
   <br />
-  Author: <input type="text" name="author" id="author" />
-  <br />
   <input type="submit" value="Create Post" />
 </form>
 
@@ -28,10 +26,12 @@
   <p>Unknown</p>
   {%endif%}
   <p class="publish-date">{{post.date}}</p>
-
+  {% if current_user.username == post.author or current_user.username ==
+  "admin"%}
   <a href="/home/delete/{{post.id}}">Delete</a>
   <a href="/home/edit/{{post.id}}">Edit</a>
   <hr />
+  {%endif%}
 </div>
 {%endfor%} {%else%}
 <h1>No Post in Feed</h1>

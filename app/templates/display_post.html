@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block head %}
 <title>Post {{post.id}}</title>
 {% endblock %} {% block body %}
-<a class="btn btn-dark" href="{{url_for('home')}}">Back</a>
+<a class="btn btn-dark" href="#" onclick="history.go(-1)">Back</a>
 <br />
 <p>
   Posted by {% if post.author %} {{post.author}} {% else %} [Unknown] {%endif%}
@@ -23,12 +23,15 @@
   <p>User: {{comment.author}}</p>
   <p class="publish-date">{{comment.date}}</p>
   <h3>{{comment.content}}</h3>
+  {% if current_user.username == comment.author or current_user.username ==
+  "admin"%}
   <div class="options" id="{{comment.author}}">
     <a href="{{url_for('delete_comment', id=comment.id)}}">Delete</a>
     <a href="">
       <button>Edit</button>
     </a>
   </div>
+  {%endif%}
   <hr />
   {%endfor%}
   <hr />

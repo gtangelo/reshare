@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% block head %}
+<title>Repost - Admin Panel</title>
+{% endblock %} {% block body %}
+
+<div class="tab-list">
+  <ul>
+    <li id="posts-active">Posts</li>
+    <li id="users">Users</li>
+  </ul>
+</div>
+
+<div>
+  {%if feed%} {% for post in feed%}
+  <div
+    id="{{post.id}}"
+    style="cursor: pointer;"
+    onclick="window.location='{{url_for('display_post', id=post.id)}}';"
+  >
+    <h1>{{post.title}}</h1>
+    <p>{{post.content}}</p>
+    {% if post.author %}
+    <p>{{post.author}}</p>
+    {%else %}
+    <p>Unknown</p>
+    {%endif%}
+    <p class="publish-date">{{post.date}}</p>
+    <a href="/home/delete/{{post.id}}">Delete</a>
+    <hr />
+  </div>
+  {%endfor%} {%else%}
+  <h1>No Post in Feed</h1>
+  {%endif%}
+</div>
+
+<div>
+  {%if users%} {% for user in users%}
+  <div>
+    <h1>User ID: {{user.id}}</h1>
+    <h1>Username: {{user.username}}</h1>
+    <p>Password: {{user.password}}</p>
+    <a href="{{url_for('delete_user', id=user.id)}}">Delete User</a>
+    <hr />
+  </div>
+  {%endfor%} {%else%}
+  <p>No Users</p>
+  {%endif%}
+</div>
+{% endblock %}
