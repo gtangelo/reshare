@@ -10,8 +10,9 @@
   Posted by {% if post.author %} {{post.author}} {% else %} [Unknown] {%endif%}
   on {{post.date}}
 </small>
-<hr />
-<p>{{post.content}}</p>
+<br />
+<br />
+<p style="white-space: pre-wrap;">{{post.content}}</p>
 <hr />
 <!-- <div class="like-bar">
   <button>Likes: {{post.likes}}</button>
@@ -20,22 +21,24 @@
 <div id="comment_section">
   {%if current_user.is_authenticated%}
   <form method="POST" action="{{url_for('display_post', id=post.id)}}">
-    <textarea class="form-control" rows="5" name="content"></textarea>
-    <br />
-    <input
-      class="btn btn-success btn-sm float-right"
-      type="submit"
-      value="Add Comment"
-    />
+    {{form.hidden_tag()}}
+    <div class="form-group">
+      {{form.content(class="form-control", rows="4")}}
+    </div>
+    <div class="form-group">
+      {{form.submit(class="btn btn-success btn-sm float-right")}}
+    </div>
     <br />
   </form>
   {%else%}
-  <i>Sign in to comment</i>
+  <a href="{{url_for('register')}}">
+    <i>Sign in to comment</i>
+  </a>
   {%endif%} {%for comment in comments%}
   <hr />
-  <h4>{{comment.content}}</h4>
   <small>Posted by {{comment.author}} on </small>
   <small class="publish-date">{{comment.date}}</small>
+  <p style="white-space: pre-wrap;">{{comment.content}}</p>
   {% if current_user.username == comment.author or current_user.username ==
   "admin"%}
   <div class="float-right">

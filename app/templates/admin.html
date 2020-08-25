@@ -13,7 +13,7 @@
     </li>
   </ul>
 </div>
-
+<br />
 <div id="posts-tab">
   {%if feed%} {% for post in feed%}
   <div
@@ -41,13 +41,11 @@
   <i> No posts in feed</i>
   {%endif%}
 </div>
-
 <div id="users-tab" style="display: none;">
   {%if users%} {% for user in users%}
   <div>
-    <h2>User ID: {{user.id}}</h2>
+    <h3>User ID: {{user.id}}</h3>
     <p>Username: {{user.username}}</p>
-    <p>Password: {{user.password}}</p>
     {%if current_user.username == "admin" %}
     <a
       class="btn btn-danger btn-sm"
