@@ -1,48 +1,66 @@
 {% extends 'base.html' %} {% block head %}
 <title>Repost - Admin Panel</title>
 {% endblock %} {% block body %}
-
-<div class="tab-list">
-  <ul>
-    <li id="posts-active">Posts</li>
-    <li id="users">Users</li>
+<h1>Admin Panel</h1>
+<hr />
+<div id="admin-tabs" class="tab-list">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a id="tab-1" class="nav-link active">Posts</a>
+    </li>
+    <li class="nav-item">
+      <a id="tab-2" class="nav-link">Users</a>
+    </li>
   </ul>
 </div>
 
-<div>
+<div id="posts-tab">
   {%if feed%} {% for post in feed%}
   <div
     id="{{post.id}}"
     style="cursor: pointer;"
     onclick="window.location='{{url_for('display_post', id=post.id)}}';"
   >
-    <h1>{{post.title}}</h1>
-    <p>{{post.content}}</p>
-    {% if post.author %}
-    <p>{{post.author}}</p>
-    {%else %}
-    <p>Unknown</p>
+    <h3>{{post.title}}</h3>
+    <small>Posted by {{post.author}} on </small>
+    <small class="publish-date">{{post.date}}</small>
+    <br />
+    <br />
+    <p style="white-space: pre-wrap;">{{post.content}}</p>
+    {% if current_user.username == post.author or current_user.username ==
+    "admin"%}
+    <a href="/home/edit/{{post.id}}" class="btn btn-primary btn-sm">Edit</a>
+    &nbsp
+    <a href="/home/delete/{{post.id}}" class="btn btn-danger btn-sm">Delete</a>
+    <br />
     {%endif%}
-    <p class="publish-date">{{post.date}}</p>
-    <a href="/home/delete/{{post.id}}">Delete</a>
     <hr />
   </div>
   {%endfor%} {%else%}
-  <h1>No Post in Feed</h1>
+  <br />
+  <i> No posts in feed</i>
   {%endif%}
 </div>
 
-<div>
+<div id="users-tab" style="display: none;">
   {%if users%} {% for user in users%}
   <div>
-    <h1>User ID: {{user.id}}</h1>
-    <h1>Username: {{user.username}}</h1>
+    <h2>User ID: {{user.id}}</h2>
+    <p>Username: {{user.username}}</p>
     <p>Password: {{user.password}}</p>
-    <a href="{{url_for('delete_user', id=user.id)}}">Delete User</a>
+    {%if current_user.username == "admin" %}
+    <a
+      class="btn btn-danger btn-sm"
+      href="{{url_for('delete_user', id=user.id)}}"
+      >Delete User</a
+    >
+    {%endif%}
     <hr />
   </div>
   {%endfor%} {%else%}
-  <p>No Users</p>
+  <br />
+  <i>No user accounts in system</i>
   {%endif%}
 </div>
+<br />
 {% endblock %}

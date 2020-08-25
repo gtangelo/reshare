@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
+      href="{{url_for('static', filename='css/main.css')}}"
+    />
+    <link
+      rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
       crossorigin="anonymous"
@@ -20,12 +24,12 @@
             <a class="nav-link active" href="{{url_for('index')}}"
               >Repost <span class="sr-only"></span
             ></a>
-            {% if current_user.is_authenticated and current_user.username == "admin"%}
+            {% if current_user.is_authenticated and current_user.username ==
+            "admin"%}
             <a class="nav-link active" href="{{url_for('admin')}}"
               >Admin Panel<span class="sr-only"></span
             ></a>
-            {%endif%}
-            {% if current_user.is_authenticated%}
+            {%endif%} {% if current_user.is_authenticated%}
             <a class="nav-link active" href="{{url_for('home')}}"
               >Your Feed <span class="sr-only"></span
             ></a>
@@ -55,13 +59,17 @@
     </nav>
 
     <div class="container">
+      <br />
       {%with messages = get_flashed_messages(with_categories=true)%} {%if
       messages%} {%for category, message in messages%}
       <div class="alert alert-{{category}}">{{message}}</div>
       {%endfor%} {%endif%} {%endwith%} {% block head %} {% endblock %} {% block
       body %} {% endblock %}
+      <br/>
     </div>
-    <footer class="mt-3 pt-3 bg-dark text-center no-print">
+
+    
+    <footer class="page-footer font-small dark pt-4 bg-dark text-center no-print">
       <p class="text-muted">
         Contact:
         <br/>

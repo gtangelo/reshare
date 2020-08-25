@@ -1,19 +1,34 @@
 {% extends 'base.html' %} {% block head %}
 <title>Edit Post</title>
 {% endblock %} {% block body %}
-<h1>Editing Post</h1>
-<hr />
 <h1>Edit Post</h1>
+<hr />
+<a
+  class="btn btn-primary btn-sm"
+  href="{{url_for('home')}}"
+  onclick="history.go(-1)"
+  >Go Back to Feed</a
+>
 <form action="/home/edit/{{post.id}}" method="POST">
-  Title: <input type="text" name="title" id="title" value="{{post.title}}" />
-  <br />
-  Post:
-  <input type="text" name="content" id="content" value="{{post.content}}" />
-  <br />
-  Author:
-  <input type="text" name="author" id="author" value="{{post.author}}" />
-  <br />
-  <input type="submit" value="Save Post" />
+  <div class="form-group">
+    <label class="col-form-label-lg">Post Title</label>
+    <input
+      class="form-control"
+      type="text"
+      name="title"
+      value="{{post.title}}"
+    />
+  </div>
+  <div class="form-group">
+    <label class="col-form-label-lg">Post Title</label>
+    <textarea class="form-control" name="content" rows="5">
+{{post.content}}</textarea
+    >
+  </div>
+  <div class="form-group">
+    <input class="btn btn-success btn-sm" type="submit" value="Save Post" />
+  </div>
 </form>
+<br />
 
 {% endblock %}

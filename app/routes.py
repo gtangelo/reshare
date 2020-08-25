@@ -1,8 +1,8 @@
-from flask import render_template, request, redirect, url_for, flash, jsonify
+from flask import render_template, request, redirect, url_for, flash, request
 from app import app, db, bcrypt
 from app.models import FeedPost, PostComments, Users
-from app.forms import LoginUser, RegisterUser
-from flask_login import login_user, logout_user, current_user
+from app.forms import LoginUser, RegisterUser, CreatePost
+from flask_login import login_user, login_required, logout_user, current_user
 
 
 @app.route('/')
@@ -12,20 +12,20 @@ def index():
 
 # Shows feed of top posts
 @app.route('/home', methods=['GET', 'POST'])
+@login_required
 def home():
+    form = CreatePost()
     # Get all data from the form, process it and send it to the db
-    if request.method == 'POST':
-        post_title = request.form['title'] if request.form['title'] != '' else '[deleted]'
-        post_content = request.form['content'] if request.form['content'] != '' else '[deleted]'
-        new_post = FeedPost(title = post_title, content = post_content, author = current_user.username)
+    if form.validate_on_submit():
+        new_post = FeedPost(title=form.title.data, content=form.content.data, author = current_user.username)
         db.session.add(new_post)
         db.session.commit()
-        return redirect('/home')
+        return redirect(url_for('home'))
     else:
         # TODO: Change it into ordering by popular posts
         # Get post from db and order it by date in descending order
         feed_posts = FeedPost.query.order_by(FeedPost.date.desc()).all()
-        return render_template("home.html", feed=feed_posts)
+        return render_template("home.html", form=form, feed=feed_posts)
 
 # Deletes selected posts and all comments associated with that post
 @app.route('/home/delete/<int:id>')
@@ -64,11 +64,11 @@ def delete_comment(id):
 def edit_post(id):
     post = FeedPost.query.get_or_404(id)
     if request.method == 'POST':
-        post.title = request.form['title']
-        post.content = request.form['content']
-        post.author = request.form['author']
+        post.title = request.form['title'] if request.form['title'] != '' else '[deleted]'
+        post.content = request.form['content'] if request.form['content'] != '' else '[deleted]'
         db.session.commit()
-        return redirect('/home')
+        flash(f'All changes saved', 'success')
+        return redirect(request.referrer)
     else:
         return render_template('edit.html', post=post)
 
@@ -78,7 +78,7 @@ def edit_post(id):
 def display_post(id):
     post = FeedPost.query.get_or_404(id)
     if request.method == 'POST':
-        comment_post_id = request.form['post-id']
+        comment_post_id = id
         comment_content = request.form['content'] if request.form['content'] != '' else '[deleted]'
         new_comment = PostComments(post_id = comment_post_id, content = comment_content, author = current_user.username)
         db.session.add(new_comment)
@@ -86,7 +86,7 @@ def display_post(id):
         return redirect(url_for('display_post', id=id))
     else:
         # TODO: Change it into ordering by popular posts
-        comments = PostComments.query.filter_by(post_id=id).order_by(PostComments.date.desc()).all()
+        comments = PostComments.query.filter_by(post_id=id).order_by(PostComments.date).all()
         return render_template('display_post.html', post=post, comments=comments)
 
 
@@ -113,7 +113,11 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             flash('You are now log in', 'success')
-            return redirect(url_for('home'))
+            next_page = request.args.get('next')
+            if next_page:
+                return redirect (next_page)
+            else:
+                return redirect(url_for('home'))
         else:
             flash('Login Failed', 'danger')
     return render_template('login.html', form=form)
@@ -132,6 +136,7 @@ def about():
     return render_template("about.html")
 
 @app.route('/admin')
+@login_required
 def admin():
     feed_posts = FeedPost.query.order_by(FeedPost.date.desc()).all()
     users = Users.query.filter(Users.username!="admin").order_by(Users.id.desc()).all()

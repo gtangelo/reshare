@@ -1,16 +1,41 @@
 {% extends 'base.html' %} {% block head %}
 <title>Feed</title>
 {% endblock %} {% block body %}
+<h1>Create Post</h1>
+<hr />
+
+<form method="POST" action="">
+  {{form.hidden_tag()}}
+  <fieldset class="form-group">
+    <div class="form-group">
+      {{form.title.label(class="col-form-label-lg")}} {%if form.title.errors%}
+      {{form.title(class="form-control is-invalid")}}
+      <div class="invalid-feedback">
+        {%for error in form.title.errors%}
+        <span>{{error}}</span>
+        {%endfor%}
+      </div>
+      {%else%} {{form.title(class="form-control ")}} {%endif%}
+    </div>
+    <div class="form-group">
+      {{form.content.label(class="col-form-label-lg")}} {%if
+      form.content.errors%} {{form.content(class="form-control is-invalid")}}
+      <div class="invalid-feedback form-control">
+        {%for error in form.content.errors%}
+        <span>{{error}}</span>
+        {%endfor%}
+      </div>
+      {%else%} {{form.content(class="form-control", rows="4")}} {%endif%}
+    </div>
+  </fieldset>
+  <div class="form-group">
+    {{form.submit(class="btn btn btn-success")}}
+  </div>
+</form>
+
+<br />
 <h1>Your Feed</h1>
 <hr />
-<h1>Create Post</h1>
-<form action="/home" method="POST">
-  Title: <input type="text" name="title" id="title" />
-  <br />
-  Post: <input type="text" name="content" id="content" />
-  <br />
-  <input type="submit" value="Create Post" />
-</form>
 
 {%if feed%} {% for post in feed%}
 <div
@@ -18,21 +43,23 @@
   style="cursor: pointer;"
   onclick="window.location='{{url_for('display_post', id=post.id)}}';"
 >
-  <h1>{{post.title}}</h1>
-  <p>{{post.content}}</p>
-  {% if post.author %}
-  <p>{{post.author}}</p>
-  {%else %}
-  <p>Unknown</p>
-  {%endif%}
-  <p class="publish-date">{{post.date}}</p>
+  <h3>{{post.title}}</h3>
+  <small>Posted by {{post.author}} on </small>
+  <small class="publish-date">{{post.date}}</small>
+  <br />
+  <br />
+  <p style="white-space: pre-wrap;">{{post.content}}</p>
   {% if current_user.username == post.author or current_user.username ==
   "admin"%}
-  <a href="/home/delete/{{post.id}}">Delete</a>
-  <a href="/home/edit/{{post.id}}">Edit</a>
-  <hr />
+  <a href="/home/edit/{{post.id}}" class="btn btn-primary btn-sm">Edit</a>
+  &nbsp
+  <a href="/home/delete/{{post.id}}" class="btn btn-danger btn-sm">Delete</a>
+  <br />
   {%endif%}
+  <hr />
 </div>
 {%endfor%} {%else%}
-<h1>No Post in Feed</h1>
+<i> No posts in feed</i>
+<br />
+<br />
 {%endif%} {% endblock %}
