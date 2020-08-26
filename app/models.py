@@ -9,8 +9,8 @@ class PostData(db.Model):
     content = db.Column(db.Text, nullable=False)
     author = db.Column(db.String(20), nullable=False, default='Unknown')
     date = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    # likes = db.Column(db.Integer, nullable=False, default=0)
-    # dislikes = db.Column(db.Integer, nullable=False, default=0)
+    likes = db.Column(db.Integer, nullable=False, default=0)
+    dislikes = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
         return "Post ID: " + str(self.id)

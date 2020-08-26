@@ -1,8 +1,9 @@
-from flask import render_template, request, redirect, url_for, flash, request
+from flask import render_template, request, redirect, url_for, flash, request, jsonify
 from app import app, db, bcrypt
 from app.models import PostData, CommentData, UserData
 from app.forms import LoginUser, RegisterUser, CreatePost, CreateComment
 from flask_login import login_user, login_required, logout_user, current_user
+
 
 # Index Page
 @app.route('/')
@@ -147,3 +148,9 @@ def admin():
     feed_posts = PostData.query.order_by(PostData.date.desc()).all()
     users = UserData.query.filter(UserData.username!="admin").order_by(UserData.id.desc()).all()
     return render_template("admin.html", feed=feed_posts, users=users)
+
+@app.route('/post/votes/<int:id>')
+def get_votes(id):
+    post = PostData.query.get(id)
+    app.logger.info("post")
+    return jsonify({'likes':post.likes, 'dislikes':post.dislikes})

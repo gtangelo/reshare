@@ -4,6 +4,10 @@
   height: 100%;
 }
 
+.voted {
+  color: blue;
+}
+
 small {
   font-size: 12px;
 }
