@@ -1,0 +1,35 @@
+.main-container {
+  background-color: #f1f1f1;
+  display: block;
+  height: 100%;
+}
+
+small {
+  font-size: 12px;
+}
+
+#comment_section {
+  margin-left: 5%;
+}
+.comment-container {
+  padding: 20px;
+  border: 1px solid white;
+  background-color: white;
+}
+
+main {
+  height: 100%;
+  width: 100%;
+  min-height: calc(100vh - 16px - 56px);
+}
+
+.post-container {
+  padding: 20px;
+  border: 1px solid white;
+  background-color: white;
+}
+
+.footer-header {
+  font-size: 16px;
+  color: white;
+}

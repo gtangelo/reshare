@@ -7,7 +7,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 # Index Page
 @app.route('/')
 def index():
-    feed_posts = PostData.query.order_by(PostData.date.desc()).all()
+    feed_posts = PostData.query.filter_by(author="admin").order_by(PostData.date.desc()).all()
     return render_template("index.html", feed=feed_posts)
 
 # Shows home page for user
@@ -28,6 +28,15 @@ def home():
         # Get post from db and order it by date in descending order
         feed_posts = PostData.query.order_by(PostData.date.desc()).all()
         return render_template("home.html", form=form, feed=feed_posts)
+
+# Shows all user own post on page
+@app.route('/user/post')
+@login_required
+def user_posts():
+    # Get post from db and order it by date in descending order
+    feed_posts = PostData.query.filter_by(author=current_user.username).order_by(PostData.date.desc()).all()
+    return render_template("posts.html", feed=feed_posts)
+
 
 # Shows full context of posts and its comments
 @app.route('/post/<int:id>', methods=['GET', 'POST'])
@@ -52,7 +61,7 @@ def edit_post(id):
         post.title = request.form['title'] if request.form['title'] != '' else '[deleted]'
         post.content = request.form['content'] if request.form['content'] != '' else '[deleted]'
         db.session.commit()
-        flash(f'All changes saved', 'success')
+        flash(f'All changes to the post have been saved', 'success')
         return redirect(request.referrer)
     else:
         return render_template('edit.html', post=post)
@@ -115,7 +124,7 @@ def login():
             else:
                 return redirect(url_for('home'))
         else:
-            flash('Login Failed', 'danger')
+            flash('Login Failed. Incorrect username or password', 'danger')
     return render_template('login.html', form=form)
 
 @app.route('/logout')
@@ -123,10 +132,10 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/account')
-def account():
-    img = url_for('static', filename='default.jpg')
-    return render_template("settings.html", img = img)
+# @app.route('/account')
+# def account():
+#     img = url_for('static', filename='default.jpg')
+#     return render_template("settings.html", img = img)
 
 @app.route('/about')
 def about():

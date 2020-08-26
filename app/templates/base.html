@@ -5,78 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
-      href="{{url_for('static', filename='css/main.css')}}"
-    />
-    <link
-      rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static', filename='main.css')}}"
+    />
   </head>
   <body>
+    <main class="main-container">
     <!-- Toolbar -->
-
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <div class="collapse navbar-collapse" id="navbarsExample07">
           <ul class="navbar-nav mr-auto">
-            <a class="nav-link active" href="{{url_for('index')}}"
-              >Repost <span class="sr-only"></span
+            <a class="navbar-brand" href="{{url_for('index')}}"
+              >Comp Geeks <span class="sr-only"></span
             ></a>
-            {% if current_user.is_authenticated and current_user.username ==
-            "admin"%}
-            <a class="nav-link active" href="{{url_for('admin')}}"
-              >Admin Panel<span class="sr-only"></span
-            ></a>
-            {%endif%} {% if current_user.is_authenticated%}
+            {% if current_user.is_authenticated%}
             <a class="nav-link active" href="{{url_for('home')}}"
               >Your Feed <span class="sr-only"></span
             ></a>
-            <a class="nav-link active" href="{{url_for('account')}}"
-              >Settings <span class="sr-only"></span
+            <a class="nav-link active" href="{{url_for('user_posts')}}"
+              >Your Post <span class="sr-only"></span
             ></a>
             {%endif%}
             <a class="nav-link active" href="{{url_for('about')}}"
               >About <span class="sr-only"></span
             ></a>
+          </ul>
+          <nav class="navbar-nav">
+            {% if current_user.is_authenticated and current_user.username ==
+            "admin"%}
+            <a class="nav-link active" href="{{url_for('admin')}}"
+              >Admin Panel<span class="sr-only"></span
+            ></a>
+            {%endif%} 
             {% if current_user.is_authenticated%}
             <a class="nav-link active" href="{{url_for('logout')}}"
               >Logout <span class="sr-only"></span
             ></a>
             {%else%}
-            <a class="nav-link active" href="{{url_for('login')}}"
-              >Login <span class="sr-only"></span
-            ></a>
-            <a class="nav-link active" href="{{url_for('register')}}"
-              >Sign Up <span class="sr-only"></span
-            ></a>
-
+               <a class="nav-link active" href="{{url_for('login')}}"
+                >Login <span class="sr-only"></span
+              ></a>
+              <a class="nav-link active" href="{{url_for('register')}}"
+                >Sign Up <span class="sr-only"></span
+              ></a>
             {%endif%}
-          </ul>
+          </nav>  
         </div>
       </div>
     </nav>
 
-    <div class="container">
-      <br />
-      {%with messages = get_flashed_messages(with_categories=true)%} {%if
-      messages%} {%for category, message in messages%}
-      <div class="alert alert-{{category}}">{{message}}</div>
-      {%endfor%} {%endif%} {%endwith%} {% block head %} {% endblock %} {% block
-      body %} {% endblock %}
-      <br/>
-    </div>
-
     
-    <footer class="page-footer font-small dark pt-4 bg-dark text-center no-print">
-      <p class="text-muted">
-        Contact:
-        <br/>
-        <a href="https://github.com/gtangelo">Github</a>
+      <div class="container">
         <br />
+        {%with messages = get_flashed_messages(with_categories=true)%} {%if
+        messages%} {%for category, message in messages%}
+        <div class="alert alert-{{category}}">{{message}}</div>
+        {%endfor%} {%endif%} {%endwith%} {% block head %} {% endblock %} {% block
+        body %} {% endblock %}
+        <br/>
+      </div>
+    </main>
+
+    <footer class="page-footer bg-dark text-center">
+      <br/>
+      <div class="footer-header">
+        Contact Me via
+        <a href="https://github.com/gtangelo">Github</a>
+        and
         <a href="https://www.linkedin.com/in/gabriel-angelo-ting-3003691a5/">LinkedIn<br />
-      </p>
+      </div>
+      <br/>
     </footer>
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
