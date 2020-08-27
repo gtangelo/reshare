@@ -8,7 +8,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 # Index Page
 @app.route('/')
 def index():
-    feed_posts = PostData.query.filter_by(author="admin").order_by(PostData.date.desc()).all()
+    feed_posts = PostData.query.filter_by(author="admin").order_by(PostData.likes.desc()).all()
     return render_template("index.html", feed=feed_posts)
 
 # Shows home page for user
@@ -25,17 +25,16 @@ def home():
         db.session.commit()
         return redirect(url_for('home'))
     else:
-        # TODO: Change it into ordering by popular posts
-        # Get post from db and order it by date in descending order
-        feed_posts = PostData.query.order_by(PostData.date.desc()).all()
+        # Get post from db and order it by most voted posts in descending order
+        feed_posts = PostData.query.order_by(PostData.likes.desc()).all()
         return render_template("home.html", form=form, feed=feed_posts)
 
 # Shows all user own post on page
 @app.route('/user/post')
 @login_required
 def user_posts():
-    # Get post from db and order it by date in descending order
-    feed_posts = PostData.query.filter_by(author=current_user.username).order_by(PostData.date.desc()).all()
+    # Get post from db and order it by most voted posts in descending order
+    feed_posts = PostData.query.filter_by(author=current_user.username).order_by(PostData.likes.desc()).all()
     return render_template("posts.html", feed=feed_posts)
 
 
@@ -142,6 +141,7 @@ def logout():
 def about():
     return render_template("about.html")
 
+# Admin panel to show all posts and users for convienance
 @app.route('/admin')
 @login_required
 def admin():
@@ -149,6 +149,8 @@ def admin():
     users = UserData.query.filter(UserData.username!="admin").order_by(UserData.id.desc()).all()
     return render_template("admin.html", feed=feed_posts, users=users)
 
+# Keeps track on which posts the user has liked or disliked. Data on 
+# liked/disliked posts are stored in a database
 @app.route('/post/votes/<int:id>', methods=['GET','POST'])
 def manage_votes(id):
     post = PostData.query.get(id)
@@ -159,14 +161,10 @@ def manage_votes(id):
         post.dislikes = request.form['dislikes']
         status = request.form['status']
         isLike = request.form['vote']
-        if isLike == 1:
-            isLike = True
-        else:
-            isLike = False
         if status == "remove":
             VoteData.query.filter_by(post_id=request.form['post_id'], user_id=current_user.id).delete()
         elif status == "add":
-            new_vote = VoteData(post_id=request.form['post_id'], user_id=current_user.id, like_post=isLike)
+            new_vote = VoteData(post_id=request.form['post_id'], user_id=current_user.id, like_post=int(isLike))
             db.session.add(new_vote)
         elif status == "change":
             user_vote = VoteData.query.filter_by(post_id=request.form['post_id'], user_id=current_user.id).first()
@@ -174,6 +172,7 @@ def manage_votes(id):
         db.session.commit()
         return redirect(request.referrer)
 
+# API to return if a post has been voted by the user or not
 @app.route('/post/votes/status/<int:id>')
 def get_vote_status(id):
     post = VoteData.query.filter_by(post_id=id, user_id=current_user.id).first()

@@ -1,3 +1,4 @@
+// Converts all dates into correct formatting
 function convert_date() {
   const dates = document.getElementsByClassName('publish-date');
   for (date of dates) {
@@ -32,6 +33,7 @@ function convert_date() {
   }
 }
 
+// Switch tabs between showing users and posts (for admin panel)
 function switch_tabs() {
   const tab_list = document.getElementById('admin-tabs');
   tab_list.addEventListener('click', (e) => {
@@ -56,9 +58,11 @@ function switch_tabs() {
   });
 }
 
+// Gets the amounts of likes and dislikes for a given post
 async function fetch_likes(like_bar, e, i) {
   const vote_class = e.target.className;
   const post_id = like_bar[i].parentElement.id;
+
   let data = await fetch(`/post/votes/${post_id}`);
   data = await data.json();
 
@@ -92,11 +96,11 @@ async function fetch_likes(like_bar, e, i) {
       data.dislikes--;
     }
   }
-  // console.log(like_bar[i].childNodes);
 
   return data;
 }
 
+// Updates and keeps track on which posts the user has liked and disliked
 function like_bar() {
   const like_bar = document.getElementsByClassName('like-bar');
   if (like_bar) {
@@ -107,6 +111,8 @@ function like_bar() {
         .then((r) => r.json())
         .then((data) => {
           const isLiked = data.status;
+          console.log('Currnt data: ', data);
+          console.log('Update current like: ' + isLiked);
 
           // Signifies a vote has been made previously
           if (isLiked != 'null') {
@@ -122,23 +128,22 @@ function like_bar() {
         });
 
       like_bar[i].addEventListener('click', (e) => {
-        let og_likes = like_bar[i].childNodes[1].textContent;
-        og_likes = og_likes.match(/\d+/);
-        let og_dislikes = like_bar[i].childNodes[3].textContent;
-        og_dislikes = og_dislikes.match(/\d+/);
-        let og_likes_status = like_bar[i].childNodes[1].className;
-        og_likes_status = og_likes_status.match(/voted/);
-        let og_dislikes_status = like_bar[i].childNodes[3].className;
-        og_dislikes_status = og_dislikes_status.match(/voted/);
+        // Original values/status of likes and dislikes before user can vote
+        const og_likes = like_bar[i].childNodes[1].textContent.match(/\d+/);
+        const og_dislikes = like_bar[i].childNodes[3].textContent.match(/\d+/);
+        const og_likes_status = like_bar[i].childNodes[1].className.match(
+          /voted/
+        );
+        const og_dislikes_status = like_bar[i].childNodes[3].className.match(
+          /voted/
+        );
+
         fetch_likes(like_bar, e, i).then((data) => {
           const request = new XMLHttpRequest();
           request.open('POST', `/post/votes/${post_id}`, true);
           request.onload = function () {
-            if (this.status == 200) {
-              console.log('GET request complete');
-            } else {
-              console.log('Error, unable to POST request');
-            }
+            if (this.status == 200) console.log('POST request complete');
+            else console.log('Error, unable to complete POST request');
           };
           request.setRequestHeader(
             'Content-type',
@@ -150,20 +155,14 @@ function like_bar() {
 
           const curr_status_upvote = like_bar[i].childNodes[1].className;
           const curr_status_devote = like_bar[i].childNodes[3].className;
+
           // If this vote is after a non-vote
-          console.log('og -> ' + og_likes_status);
-          console.log('og -> ' + og_dislikes_status);
           if (og_likes_status != 'voted' && og_dislikes_status != 'voted') {
             // If user has dislike the post
-            if (og_dislikes < data.dislikes && og_likes == data.likes) {
+            if (og_dislikes < data.dislikes && og_likes == data.likes)
               isLike = 0;
-              console.log('disliked post1');
-            }
             // If user has like the post
-            else {
-              isLike = 1;
-              console.log('liked post2');
-            }
+            else isLike = 1;
           }
           // If this vote changes the last vote
           else {
@@ -171,27 +170,24 @@ function like_bar() {
             if (
               curr_status_upvote == 'upvote' &&
               curr_status_devote == 'devote'
-            ) {
+            )
               status = 'remove';
-              console.log('reset to standards');
-            }
             // If user has dislike the post
             else if (og_dislikes < data.dislikes && og_likes > data.likes) {
               status = 'change';
               isLike = 0;
-              console.log('disliked post4');
             }
             // If user has like the post
             else {
               status = 'change';
               isLike = 1;
-              console.log('like post5' + isLike);
             }
           }
-          console.log(status);
-          console.log(isLike);
+          console.log('Sending type of status: ' + status);
+          console.log('Sending isLike status: ' + isLike);
           request.send(
-            `likes=${data.likes}&dislikes=${data.dislikes}&post_id=${post_id}&status=${status}&vote=${isLike}`
+            `likes=${data.likes}&dislikes=${data.dislikes}&post_id=${post_id}
+            &status=${status}&vote=${isLike}`
           );
           like_bar[i].childNodes[1].textContent = `Likes: ${data.likes}`;
           like_bar[i].childNodes[3].textContent = `Dislikes: ${data.dislikes}`;

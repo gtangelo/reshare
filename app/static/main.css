@@ -5,7 +5,27 @@
 }
 
 .voted {
-  color: blue;
+  color: #2678e7;
+}
+
+.upvote,
+.devote {
+  padding: 7px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  width: 110px;
+  font-size: 12px;
+  font-weight: bold;
+  border: none;
+}
+
+.upvote {
+  background-color: #3dad4f;
+}
+
+.devote {
+  background-color: #f15353;
 }
 
 small {

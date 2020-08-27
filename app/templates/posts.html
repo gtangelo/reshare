@@ -6,31 +6,45 @@
 <hr />
 
 {%if feed%} {% for post in feed%}
-<div
-  class="post-container"
-  id="{{post.id}}"
-  style="cursor: pointer"
-  onclick="window.location='{{url_for('display_post', id=post.id)}}';"
->
-  <small>Posted by {{post.author}} on </small>
-  <small class="publish-date">{{post.date}}</small>
-  <h3>{{post.title}}</h3>
-  <hr />
-  <p style="white-space: pre-wrap">{{post.content}}</p>
-  {% if current_user.username == post.author or current_user.username ==
-  "admin"%}
-  <a href="{{url_for('edit_post', id=post.id)}}" class="btn btn-primary btn-sm"
-    >Edit</a
-  >
-  &nbsp
-  <a href="{{url_for('delete_post', id=post.id)}}" class="btn btn-danger btn-sm"
-    >Delete</a
-  >
-  {%endif%}
+<div class="post-container" id="{{post.id}}">
+  {%if current_user.is_authenticated%}
+  <div class="like-bar">
+    {%else%}
+    <div class="like-bar-view">
+      {%endif%}
+      <button class="upvote">Likes: {{post.likes}}</button>
+      <button class="devote">Dislikes: {{post.dislikes}}</button>
+    </div>
+    <div
+      id="{{post.id}}"
+      style="cursor: pointer"
+      onclick="window.location='{{url_for('display_post', id=post.id)}}';"
+    >
+      <small>Posted by {{post.author}} on </small>
+      <small class="publish-date">{{post.date}}</small>
+      <h3>{{post.title}}</h3>
+      <hr />
+      <p style="white-space: pre-wrap">{{post.content}}</p>
+      {% if current_user.username == post.author or current_user.username ==
+      "admin"%}
+      <a
+        href="{{url_for('edit_post', id=post.id)}}"
+        class="btn btn-primary btn-sm"
+        >Edit</a
+      >
+      &nbsp
+      <a
+        href="{{url_for('delete_post', id=post.id)}}"
+        class="btn btn-danger btn-sm"
+        >Delete</a
+      >
+      {%endif%}
+    </div>
+  </div>
+  <br />
+  {%endfor%} {%else%}
+  <i> No posts in feed</i>
+  <br />
+  <br />
+  {%endif%} {% endblock %}
 </div>
-<br />
-{%endfor%} {%else%}
-<i> No posts in feed</i>
-<br />
-<br />
-{%endif%} {% endblock %}
