@@ -64,11 +64,9 @@ async function fetch_likes(like_bar, e, i) {
 
   // Case where user is first voting to upvote
   if (vote_class == 'upvote') {
-    console.log(1);
     e.target.className = `${vote_class} voted`;
     // Case where user is changing votes
     if (like_bar[i].childNodes[3].className == 'devote voted') {
-      console.log('devoted');
       like_bar[i].childNodes[3].className = 'devote';
       data.dislikes--;
     }
@@ -76,11 +74,9 @@ async function fetch_likes(like_bar, e, i) {
   }
   // Case where user is first voting to devote
   else if (vote_class == 'devote') {
-    console.log(2);
     e.target.className = `${vote_class} voted`;
     // Case where user is changing votes
     if (like_bar[i].childNodes[1].className == 'upvote voted') {
-      console.log('upvoted');
       like_bar[i].childNodes[1].className = 'upvote';
       data.likes--;
     }
@@ -89,17 +85,15 @@ async function fetch_likes(like_bar, e, i) {
   // Case where user is first voting to remove their vote
   else {
     if (vote_class == 'upvote voted') {
-      console.log('devoted for upvote');
       like_bar[i].childNodes[1].className = 'upvote';
-      // data.likes--;
+      data.likes--;
     } else if (vote_class == 'devote voted') {
-      console.log('devoted for devote');
       like_bar[i].childNodes[3].className = 'devote';
-      // data.dislikes--;
+      data.dislikes--;
     }
   }
   // console.log(like_bar[i].childNodes);
-  console.log(data);
+
   return data;
 }
 
@@ -107,8 +101,101 @@ function like_bar() {
   const like_bar = document.getElementsByClassName('like-bar');
   if (like_bar) {
     for (let i = 0; i < like_bar.length; i++) {
+      const post_id = like_bar[i].parentElement.id;
+      // Update current status of likes on a fresh refresh
+      fetch(`/post/votes/status/${post_id}`)
+        .then((r) => r.json())
+        .then((data) => {
+          const isLiked = data.status;
+
+          // Signifies a vote has been made previously
+          if (isLiked != 'null') {
+            // Signifies that the post was liked
+            if (isLiked) {
+              like_bar[i].childNodes[1].className = 'upvote voted';
+            }
+            // Signifies that the post was disliked
+            else if (!isLiked) {
+              like_bar[i].childNodes[3].className = 'devote voted';
+            }
+          }
+        });
+
       like_bar[i].addEventListener('click', (e) => {
-        fetch_likes(like_bar, e, i).then((r) => console.log(r));
+        let og_likes = like_bar[i].childNodes[1].textContent;
+        og_likes = og_likes.match(/\d+/);
+        let og_dislikes = like_bar[i].childNodes[3].textContent;
+        og_dislikes = og_dislikes.match(/\d+/);
+        let og_likes_status = like_bar[i].childNodes[1].className;
+        og_likes_status = og_likes_status.match(/voted/);
+        let og_dislikes_status = like_bar[i].childNodes[3].className;
+        og_dislikes_status = og_dislikes_status.match(/voted/);
+        fetch_likes(like_bar, e, i).then((data) => {
+          const request = new XMLHttpRequest();
+          request.open('POST', `/post/votes/${post_id}`, true);
+          request.onload = function () {
+            if (this.status == 200) {
+              console.log('GET request complete');
+            } else {
+              console.log('Error, unable to POST request');
+            }
+          };
+          request.setRequestHeader(
+            'Content-type',
+            'application/x-www-form-urlencoded'
+          );
+
+          let status = 'add';
+          let isLike = 0;
+
+          const curr_status_upvote = like_bar[i].childNodes[1].className;
+          const curr_status_devote = like_bar[i].childNodes[3].className;
+          // If this vote is after a non-vote
+          console.log('og -> ' + og_likes_status);
+          console.log('og -> ' + og_dislikes_status);
+          if (og_likes_status != 'voted' && og_dislikes_status != 'voted') {
+            // If user has dislike the post
+            if (og_dislikes < data.dislikes && og_likes == data.likes) {
+              isLike = 0;
+              console.log('disliked post1');
+            }
+            // If user has like the post
+            else {
+              isLike = 1;
+              console.log('liked post2');
+            }
+          }
+          // If this vote changes the last vote
+          else {
+            // reset back to no votes made
+            if (
+              curr_status_upvote == 'upvote' &&
+              curr_status_devote == 'devote'
+            ) {
+              status = 'remove';
+              console.log('reset to standards');
+            }
+            // If user has dislike the post
+            else if (og_dislikes < data.dislikes && og_likes > data.likes) {
+              status = 'change';
+              isLike = 0;
+              console.log('disliked post4');
+            }
+            // If user has like the post
+            else {
+              status = 'change';
+              isLike = 1;
+              console.log('like post5' + isLike);
+            }
+          }
+          console.log(status);
+          console.log(isLike);
+          request.send(
+            `likes=${data.likes}&dislikes=${data.dislikes}&post_id=${post_id}&status=${status}&vote=${isLike}`
+          );
+          like_bar[i].childNodes[1].textContent = `Likes: ${data.likes}`;
+          like_bar[i].childNodes[3].textContent = `Dislikes: ${data.dislikes}`;
+        });
       });
     }
   }

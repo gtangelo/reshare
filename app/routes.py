@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, request, jsonify
 from app import app, db, bcrypt
-from app.models import PostData, CommentData, UserData
+from app.models import PostData, CommentData, UserData, VoteData
 from app.forms import LoginUser, RegisterUser, CreatePost, CreateComment
 from flask_login import login_user, login_required, logout_user, current_user
 
@@ -149,8 +149,37 @@ def admin():
     users = UserData.query.filter(UserData.username!="admin").order_by(UserData.id.desc()).all()
     return render_template("admin.html", feed=feed_posts, users=users)
 
-@app.route('/post/votes/<int:id>')
-def get_votes(id):
+@app.route('/post/votes/<int:id>', methods=['GET','POST'])
+def manage_votes(id):
     post = PostData.query.get(id)
-    app.logger.info("post")
-    return jsonify({'likes':post.likes, 'dislikes':post.dislikes})
+    if request.method == "GET":
+        return jsonify({'likes':post.likes, 'dislikes':post.dislikes})
+    else:
+        post.likes = request.form['likes']
+        post.dislikes = request.form['dislikes']
+        status = request.form['status']
+        isLike = request.form['vote']
+        if isLike == 1:
+            isLike = True
+        else:
+            isLike = False
+        if status == "remove":
+            VoteData.query.filter_by(post_id=request.form['post_id'], user_id=current_user.id).delete()
+        elif status == "add":
+            new_vote = VoteData(post_id=request.form['post_id'], user_id=current_user.id, like_post=isLike)
+            db.session.add(new_vote)
+        elif status == "change":
+            user_vote = VoteData.query.filter_by(post_id=request.form['post_id'], user_id=current_user.id).first()
+            user_vote.like_post = not user_vote.like_post
+        db.session.commit()
+        return redirect(request.referrer)
+
+@app.route('/post/votes/status/<int:id>')
+def get_vote_status(id):
+    post = VoteData.query.filter_by(post_id=id, user_id=current_user.id).first()
+    if post:
+        return jsonify({"status": post.like_post})
+    else:
+        return jsonify({"status": "null"})
+
+

@@ -42,3 +42,9 @@ class UserData(db.Model, UserMixin):
 @login_manager.user_loader
 def load_user(user_id):
     return UserData.query.get(int(user_id))
+
+class VoteData(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    like_post = db.Column(db.Boolean, nullable=False)
