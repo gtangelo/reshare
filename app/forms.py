@@ -1,8 +1,8 @@
 from app.models import UserData
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, IntegerField
+from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, NumberRange
 
 # Form class when user wants to register an account
 class RegisterUser(FlaskForm):
@@ -25,8 +25,9 @@ class LoginUser(FlaskForm):
 
 # Form class when user wants to create a post on the forum
 class CreatePost(FlaskForm):
-    title = StringField('Post Title', validators=[DataRequired(), Length(min=2, max=100)])
-    content = TextAreaField('Post Content', validators=[DataRequired(), Length(min=1)])
+    item = StringField('Item', validators=[DataRequired(message="Item Required"), Length(min=2, max=100)])
+    stock = IntegerField('Number of Stock', validators=[DataRequired(), NumberRange(min=0, message="Number Required")])
+    content = TextAreaField('Item Description', validators=[DataRequired(), Length(min=1)])
     submit = SubmitField('Create Post')
 
 # Form class when user wants to create a comment of a post

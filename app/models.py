@@ -5,7 +5,8 @@ from flask_login import UserMixin
 # Database that contains all posts made by every user
 class PostData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
+    item = db.Column(db.String(20), nullable=False) # TODO
+    stock = db.Column(db.Integer, nullable=False)
     content = db.Column(db.Text, nullable=False)
     author = db.Column(db.String(20), nullable=False, default='Unknown')
     date = db.Column(db.DateTime, nullable=False, default=datetime.now)
@@ -23,8 +24,6 @@ class CommentData(db.Model):
     content = db.Column(db.Text, nullable=False)
     author = db.Column(db.String(20), nullable=False, default='Unknown')
     date = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    # likes = db.Column(db.Integer, nullable=False, default=0)
-    # dislikes = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
         return "Comment ID: " + str(self.id) + "Post ID: " + str(self.post_id)
@@ -34,10 +33,21 @@ class UserData(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
-    # profile_img = db.Column(db.String(50), nullable=False, default='default.jpg')
+    history = db.Column(db.Text, nullable=True) # TODO
 
     def __repr__(self):
         return "Username: " + str(self.username)
+
+# Model for database that stores all purchases made from a user
+class PurchaseHistory(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    purchase_item = db.Column(db.Text, nullable=False)
+    seller = db.Column(db.Text, nullable=False)
+    purchase_user_id = db.Column(db.Integer, nullable=False)
+    purchase_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+
+    def __repr__(self):
+        return "Item Purchase: " + str(self.purchase_item) + " User Bought: " + str(self.purchase_user_id)
 
 @login_manager.user_loader
 def load_user(user_id):

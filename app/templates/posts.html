@@ -22,7 +22,7 @@
     >
       <small>Posted by {{post.author}} on </small>
       <small class="publish-date">{{post.date}}</small>
-      <h3>{{post.title}}</h3>
+      <h3>{{post.item}} @ {{post.stock}}</h3>
       <hr />
       <p style="white-space: pre-wrap">{{post.content}}</p>
       {% if current_user.username == post.author or current_user.username ==

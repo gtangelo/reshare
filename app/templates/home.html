@@ -1,30 +1,9 @@
 {% extends 'base.html' %} {% block head %}
 <title>Feed</title>
 {% endblock %} {% block body %}
-<h1>Create Post</h1>
-<hr />
+<a class="btn btn-success" href="{{url_for('sell')}}">+ Sell Item</a>
 
-<form method="POST" action="">
-  {{form.hidden_tag()}}
-  <fieldset class="form-group">
-    <div class="form-group">
-      {{form.title.label(class="col-form-label-lg")}} {%if form.title.errors%}
-      {{form.title(class="form-control is-invalid")}}
-      <div class="invalid-feedback">
-        {%for error in form.title.errors%}
-        <span>{{error}}</span>
-        {%endfor%}
-      </div>
-      {%else%} {{form.title(class="form-control ")}} {%endif%}
-    </div>
-    <div class="form-group">
-      {{form.content.label(class="col-form-label-lg")}}
-      {{form.content(class="form-control", rows="4")}}
-    </div>
-  </fieldset>
-  <div class="form-group">{{form.submit(class="btn btn btn-success")}}</div>
-</form>
-
+<br />
 <br />
 <h1>Your Feed</h1>
 <hr />
@@ -46,7 +25,7 @@
     >
       <small>Posted by {{post.author}} on </small>
       <small class="publish-date">{{post.date}}</small>
-      <h3>{{post.title}}</h3>
+      <h3>{{post.item}} @ {{post.stock}}</h3>
       <hr />
       <p style="white-space: pre-wrap">{{post.content}}</p>
       {% if current_user.username == post.author or current_user.username ==

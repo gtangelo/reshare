@@ -8,11 +8,11 @@ db.create_all()
 
 # Create admin user
 hash_password = bcrypt.generate_password_hash("admin").decode('utf-8')
-new_user = UserData(username="admin", password=hash_password)
+new_user = UserData(username="admin", password=hash_password, history="toilet paper")
 db.session.add(new_user)
 
 # Create first post
-post_content = "Welcome to my forum! Hope you have a great time!"
-new_post = PostData(title="Announcement", content=post_content, author="admin")
+post_content = "Selling some toilet papers to give back to the community! :)"
+new_post = PostData(content=post_content, author="admin", item="toilet paper", stock=3)
 db.session.add(new_post)
 db.session.commit()

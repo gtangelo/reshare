@@ -1,0 +1,16 @@
+{% extends 'base.html' %} 
+
+{% block head %}
+  <title>Buy Item</title>
+{% endblock %} 
+
+{% block body %}
+  <h1>Purchase Item</h1>
+  <hr />
+  <p>Item: {{post.item}}</p>
+  <p>Stock: {{post.stock}}</p>
+  <p>Poster: {{post.author}}</p>
+  <form method="POST" action="{{url_for('buy', id=post.id)}}">
+    <input type="submit">
+  </form>
+{% endblock %}

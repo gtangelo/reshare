@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, request, jsonify
 from app import app, db, bcrypt
-from app.models import PostData, CommentData, UserData, VoteData
+from app.models import PostData, CommentData, UserData, VoteData, PurchaseHistory
 from app.forms import LoginUser, RegisterUser, CreatePost, CreateComment
 from flask_login import login_user, login_required, logout_user, current_user
 
@@ -12,22 +12,12 @@ def index():
     return render_template("index.html", feed=feed_posts)
 
 # Shows home page for user
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/home')
 @login_required
 def home():
-    form = CreatePost()
-    # Get all data from the form, process it and send it to the db
-    if form.validate_on_submit():
-        new_post = PostData(title=form.title.data, 
-                            content=form.content.data, 
-                            author = current_user.username)
-        db.session.add(new_post)
-        db.session.commit()
-        return redirect(url_for('home'))
-    else:
-        # Get post from db and order it by most voted posts in descending order
-        feed_posts = PostData.query.order_by(PostData.likes.desc()).all()
-        return render_template("home.html", form=form, feed=feed_posts)
+    # Get post from db and order it by most voted posts in descending order
+    feed_posts = PostData.query.filter(PostData.author != current_user.username).order_by(PostData.likes.desc()).all()
+    return render_template("home.html", feed=feed_posts)
 
 # Shows all user own post on page
 @app.route('/user/post')
@@ -136,6 +126,51 @@ def logout():
 # def account():
 #     img = url_for('static', filename='default.jpg')
 #     return render_template("settings.html", img = img)
+
+@app.route('/buy/<int:id>', methods=['GET', 'POST'])
+@login_required
+def buy(id):
+    post = PostData.query.get(id)
+    if request.method == 'POST':
+        if post.stock != 0:
+            # Deduct current stock
+            post.stock -= 1
+            # Add item to purchase history
+            purchase = PurchaseHistory(purchase_item=post.item, purchase_user_id=current_user.id, seller=post.author)
+            db.session.add(purchase)
+            db.session.commit()
+            flash(f'Item successfully bought', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash(f'Not enough stock', 'danger')
+            return redirect(url_for('index'))
+    else:
+        return render_template('buy.html', post=post) 
+
+@app.route('/sell', methods=['GET', 'POST'])
+@login_required
+def sell():
+    form = CreatePost()
+    # Get all data from the form, process it and send it to the db
+    if form.validate_on_submit():
+        new_post = PostData(item=form.item.data, 
+                            stock=form.stock.data,
+                            content=form.content.data, 
+                            author = current_user.username)
+        db.session.add(new_post)
+        db.session.commit()
+        return redirect(url_for('home'))
+    else:
+        # Get post from db and order it by most voted posts in descending order
+        feed_posts = PostData.query.order_by(PostData.likes.desc()).all()
+        return render_template("sell.html", form=form, feed=feed_posts)
+
+
+@app.route('/purchase_history')
+@login_required
+def purchase_history():
+    history = PurchaseHistory.query.filter_by(purchase_user_id=current_user.id).order_by(PurchaseHistory.purchase_date.desc()).all()
+    return render_template('history.html', history=history)
 
 @app.route('/about')
 def about():

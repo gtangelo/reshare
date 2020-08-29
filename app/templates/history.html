@@ -1,0 +1,23 @@
+{% extends 'base.html' %} 
+
+{% block head %}
+  <title>View Purchases</title>
+{% endblock %} 
+
+{% block body %}
+  <h1>Purchase History</h1>
+  <hr />
+  {% if history%}
+    {% for purchase in history %}
+      <div class="post-container">
+        <small>Purchased on </small>
+        <small class="publish-date">{{purchase.purchase_date}}</small>
+        <h4>Item: {{purchase.purchase_item}}</h4>
+        <h4>Seller: {{purchase.seller}}</h4>
+      </div>
+      <br/>
+    {% endfor %}
+  {% else %}
+    <h4><i>Nothing purchased yet!</i></h4>
+  {% endif %}
+{% endblock %}
