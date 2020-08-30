@@ -8,7 +8,7 @@ db.create_all()
 
 # Create admin user
 hash_password = bcrypt.generate_password_hash("admin").decode('utf-8')
-new_user = UserData(username="admin", password=hash_password, history="toilet paper")
+new_user = UserData(username="admin", password=hash_password)
 db.session.add(new_user)
 
 # Create first post

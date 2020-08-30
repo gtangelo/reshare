@@ -5,7 +5,7 @@ from flask_login import UserMixin
 # Database that contains all posts made by every user
 class PostData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    item = db.Column(db.String(20), nullable=False) # TODO
+    item = db.Column(db.String(20), nullable=False)
     stock = db.Column(db.Integer, nullable=False)
     content = db.Column(db.Text, nullable=False)
     author = db.Column(db.String(20), nullable=False, default='Unknown')
@@ -33,8 +33,7 @@ class CommentData(db.Model):
 class UserData(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False)
-    history = db.Column(db.Text, nullable=True) # TODO
+    password = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
         return "Username: " + str(self.username)
@@ -55,6 +54,7 @@ class PurchaseHistory(db.Model, UserMixin):
 def load_user(user_id):
     return UserData.query.get(int(user_id))
 
+# Model for database that stores all votes made by the user for each post
 class VoteData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer, nullable=False)

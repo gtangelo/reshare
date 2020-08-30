@@ -1,13 +1,15 @@
-from flask import render_template, request, redirect, url_for, flash, request, jsonify
 from app import app, db, bcrypt
 from app.models import PostData, CommentData, UserData, VoteData, PurchaseHistory
 from app.forms import LoginUser, RegisterUser, CreatePost, UpdatePost, CreateComment
+
+from flask import render_template, request, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
 
 from PIL import Image
 import secrets
 import os
 
+# Save image into folder
 def save_img(img):
     hex = secrets.token_hex(8)
     _, ext = os.path.splitext(img.filename)
@@ -53,7 +55,6 @@ def display_post(id):
         db.session.commit()
         return redirect(url_for('display_post', id=id))
     else:
-        # TODO: Change it into ordering by popular posts
         comments = CommentData.query.filter_by(post_id=id).order_by(CommentData.date).all()
         return render_template('display_post.html', post=post, comments=comments, form=form)
 
