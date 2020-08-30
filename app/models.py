@@ -43,6 +43,7 @@ class UserData(db.Model, UserMixin):
 class PurchaseHistory(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     purchase_item = db.Column(db.Text, nullable=False)
+    purchase_post_id = db.Column(db.Integer, nullable=False)
     seller = db.Column(db.Text, nullable=False)
     purchase_user_id = db.Column(db.Integer, nullable=False)
     purchase_date = db.Column(db.DateTime, nullable=False, default=datetime.now)

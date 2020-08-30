@@ -1,0 +1,12 @@
+{% extends 'base.html' %} 
+
+{% block head %}
+  <title>Out of Stock</title>
+{% endblock %} 
+
+{% block body %}
+  <a class="btn btn-success btn-sm" href="#" onclick="history.go(-1)">Back</a>
+  <br>
+  <br>
+  <p class="text-danger"> Sorry! It seems that you have already bought this item. Only one stock per customer :(</p>
+{% endblock %}

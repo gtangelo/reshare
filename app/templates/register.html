@@ -1,53 +1,64 @@
-{% extends 'base.html' %} {% block head %}
-<title>Repost - Register</title>
-{% endblock %} {% block body %}
-<div class="content-section">
-  <form method="POST" action="">
-    {{form.hidden_tag()}}
-    <fieldset class="form-group">
-      <legend class="border-bottom mb-4">Sign Up</legend>
-      <div class="form-group">
-        {{form.username.label(class="form-control-label")}} {%if
-        form.username.errors%} {{form.username(class="form-control
-        is-invalid")}}
-        <div class="invalid-feedback">
-          {%for error in form.username.errors%}
-          <span>{{error}}</span>
-          {%endfor%}
+{% extends 'base.html' %} 
+
+{% block head %}
+  <title>ReShare - Register</title>
+{% endblock %} 
+
+{% block body %}
+  <div class="content-section">
+    <form method="POST" action="">
+      {{form.hidden_tag()}}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Sign Up</legend>
+        <div class="form-group">
+          {{form.username.label(class="form-control-label")}} 
+          {% if form.username.errors %} 
+            {{form.username(class="form-control is-invalid")}}
+            <div class="invalid-feedback">
+              {% for error in form.username.errors %}
+                <span>{{error}}</span>
+              {% endfor %}
+            </div>
+          {% else %} 
+            {{form.username(class="form-control")}} 
+          {% endif %}
         </div>
-        {%else%} {{form.username(class="form-control")}} {%endif%}
-      </div>
-      <div class="form-group">
-        {{form.password.label(class="form-control-label")}} {%if
-        form.password.errors%} {{form.password(class="form-control
-        is-invalid")}}
-        <div class="invalid-feedback">
-          {%for error in form.password.errors%}
-          <span>{{error}}</span>
-          {%endfor%}
+        <div class="form-group">
+          {{form.password.label(class="form-control-label")}} 
+          
+          {% if form.password.errors %} 
+            {{form.password(class="form-control is-invalid")}}
+            <div class="invalid-feedback">
+              {% for error in form.password.errors %}
+                <span>{{error}}</span>
+              {% endfor %}
+            </div>
+          {%else%} 
+            {{form.password(class="form-control")}}
+          {%endif%}
         </div>
-        {%else%} {{form.password(class="form-control")}} {%endif%}
-      </div>
-      <div class="form-group">
-        {{form.confirm_password.label(class="form-control-label")}} {%if
-        form.confirm_password.errors%}
-        {{form.confirm_password(class="form-control is-invalid")}}
-        <div class="invalid-feedback">
-          {%for error in form.confirm_password.errors%}
-          <span>{{error}}</span>
-          {%endfor%}
+        <div class="form-group">
+          {{form.confirm_password.label(class="form-control-label")}} 
+          {% if form.confirm_password.errors %}
+            {{form.confirm_password(class="form-control is-invalid")}}
+            <div class="invalid-feedback">
+              {% for error in form.confirm_password.errors %}
+                <span>{{error}}</span>
+              {% endfor %}
+            </div>
+          {% else %} 
+            {{form.confirm_password(class="form-control")}} 
+          {% endif %}
         </div>
-        {%else%} {{form.confirm_password(class="form-control")}} {%endif%}
+      </fieldset>
+      <div class="form-group">
+        {{form.submit(class="btn btn-success")}}
       </div>
-    </fieldset>
-    <div class="form-group">
-      {{form.submit(class="btn btn-success")}}
-    </div>
-  </form>
-</div>
-<div>
-  <small class="text-muted">
-    Have an Account? <a href="{{url_for('login')}}">Sign In</a>
-  </small>
-</div>
+    </form>
+  </div>
+  <div>
+    <small class="text-muted">
+      Have an Account? <a href="{{url_for('login')}}">Sign In</a>
+    </small>
+  </div>
 {% endblock %}

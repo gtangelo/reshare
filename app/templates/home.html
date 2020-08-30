@@ -24,6 +24,9 @@
           <button class="upvote">Likes: {{post.likes}}</button>
           <button class="devote">Dislikes: {{post.dislikes}}</button>
         </div>
+        <div>
+          <img class="post-img float-right" src="{{url_for('static', filename='images/' + post.img)}}" />
+        </div>
 
         <div id="{{post.id}}">
           <small>Posted by {{post.author}} on </small>

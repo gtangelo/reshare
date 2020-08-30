@@ -25,56 +25,63 @@
             <a class="navbar-brand" href="{{url_for('index')}}"
               >ReShare <span class="sr-only"></span
             ></a>
-            {% if current_user.is_authenticated%}
-            <a class="nav-link active" href="{{url_for('sell')}}"
-              >Sell Item <span class="sr-only"></span
-            ></a>
-            <a class="nav-link active" href="{{url_for('home')}}"
-              >Your Feed <span class="sr-only"></span
-            ></a>
-            <a class="nav-link active" href="{{url_for('user_posts')}}"
-              >Your Post <span class="sr-only"></span
-            ></a>
-            {%endif%}
-            <a class="nav-link active" href="{{url_for('about')}}"
-              >About <span class="sr-only"></span
-            ></a>
+            {% if current_user.is_authenticated %}
+              <a class="nav-link active" href="{{url_for('home')}}">
+                Feed <span class="sr-only"></span>
+              </a>
+              <a class="nav-link active" href="{{url_for('sell')}}">
+                Sell Item <span class="sr-only"></span>
+              </a>
+              <a class="nav-link active" href="{{url_for('user_posts')}}">
+                Your Posts <span class="sr-only"></span>
+              </a>
+            {% endif %}
+            <a class="nav-link active" href="{{url_for('about')}}">
+              About <span class="sr-only"></span>
+            </a>
           </ul>
           <nav class="navbar-nav">
-            {% if current_user.is_authenticated and current_user.username ==
-            "admin"%}
-            <a class="nav-link active" href="{{url_for('admin')}}"
-              >Admin Panel<span class="sr-only"></span
-            ></a>
-            {%endif%} 
+            {% if current_user.is_authenticated and current_user.username == "admin"%}
+              <a class="nav-link active" href="{{url_for('admin')}}">
+                Admin Panel<span class="sr-only"></span>
+              </a>
+            {% endif %} 
             {% if current_user.is_authenticated%}
-            <a class="nav-link active" href="{{url_for('purchase_history')}}"
-              >Purchase History <span class="sr-only"></span
-            ></a>
-            <a class="nav-link active" href="{{url_for('logout')}}"
-              >Logout <span class="sr-only"></span
-            ></a>
-            {%else%}
-               <a class="nav-link active" href="{{url_for('login')}}"
-                >Login <span class="sr-only"></span
-              ></a>
-              <a class="nav-link active" href="{{url_for('register')}}"
-                >Sign Up <span class="sr-only"></span
-              ></a>
-            {%endif%}
+              <a class="nav-link active" href="{{url_for('purchase_history')}}">
+                Purchase History <span class="sr-only"></span>
+              </a>
+              <a class="nav-link active" href="{{url_for('logout')}}">
+                Logout <span class="sr-only"></span>
+              </a>
+            {% else %}
+              <a class="nav-link active" href="{{url_for('login')}}">
+                Login <span class="sr-only"></span>
+              </a>
+              <a class="nav-link active" href="{{url_for('register')}}">
+                Sign Up <span class="sr-only"></span>
+              </a>
+            {% endif %}
           </nav>  
         </div>
       </div>
     </nav>
 
     
-      <div class="container">
-        <br />
-        {%with messages = get_flashed_messages(with_categories=true)%} {%if
-        messages%} {%for category, message in messages%}
-        <div class="alert alert-{{category}}">{{message}}</div>
-        {%endfor%} {%endif%} {%endwith%} {% block head %} {% endblock %} {% block
-        body %} {% endblock %}
+    <div class="container">
+      <br />
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %} 
+            {% for category, message in messages %}
+              <div class="alert alert-{{category}}">{{message}}</div>
+            {% endfor %} 
+          {% endif %} 
+        {% endwith %} 
+        
+        {% block head %} 
+        {% endblock %} 
+
+        {% block body %} 
+        {% endblock %}
         <br/>
       </div>
     </main>

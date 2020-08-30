@@ -22,7 +22,7 @@ def save_img(img):
 # Index Page
 @app.route('/')
 def index():
-    feed_posts = PostData.query.filter_by(author="admin").order_by(PostData.likes.desc()).all()
+    feed_posts = PostData.query.order_by(PostData.likes.desc()).all()
     return render_template("index.html", feed=feed_posts)
 
 # Shows home page for user
@@ -149,11 +149,6 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-# @app.route('/account')
-# def account():
-#     img = url_for('static', filename='default.jpg')
-#     return render_template("settings.html", img = img)
-
 @app.route('/buy/<int:id>', methods=['GET', 'POST'])
 @login_required
 def buy(id):
@@ -163,7 +158,7 @@ def buy(id):
             # Deduct current stock
             post.stock -= 1
             # Add item to purchase history
-            purchase = PurchaseHistory(purchase_item=post.item, purchase_user_id=current_user.id, seller=post.author)
+            purchase = PurchaseHistory(purchase_item=post.item, purchase_user_id=current_user.id, purchase_post_id=post.id, seller=post.author)
             db.session.add(purchase)
             db.session.commit()
             flash(f'Item successfully bought', 'success')
@@ -172,6 +167,9 @@ def buy(id):
             flash(f'Not enough stock', 'danger')
             return redirect(url_for('index'))
     else:
+        bought = PurchaseHistory.query.filter_by(purchase_user_id=current_user.id, purchase_post_id=post.id).first()
+        if bought:
+            return render_template('bought.html', post=post) 
         return render_template('buy.html', post=post) 
 
 @app.route('/sell', methods=['GET', 'POST'])
