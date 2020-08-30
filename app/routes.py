@@ -139,7 +139,7 @@ def login():
             if next_page:
                 return redirect(next_page)
             else:
-                return redirect(url_for('home'))
+                return redirect(url_for('index'))
         else:
             flash('Login Failed. Incorrect username or password', 'danger')
     return render_template('login.html', form=form)
@@ -226,12 +226,12 @@ def manage_votes(id):
         status = request.form['status']
         isLike = request.form['vote']
         if status == "remove":
-            VoteData.query.filter_by(post_id=request.form['post_id'], user_id=current_user.id).delete()
+            VoteData.query.filter_by(post_id=int(request.form['post_id']), user_id=current_user.id).delete()
         elif status == "add":
-            new_vote = VoteData(post_id=request.form['post_id'], user_id=current_user.id, like_post=int(isLike))
+            new_vote = VoteData(post_id=int(request.form['post_id']), user_id=current_user.id, like_post=int(isLike))
             db.session.add(new_vote)
         elif status == "change":
-            user_vote = VoteData.query.filter_by(post_id=request.form['post_id'], user_id=current_user.id).first()
+            user_vote = VoteData.query.filter_by(post_id=int(request.form['post_id']), user_id=current_user.id).first()
             user_vote.like_post = not user_vote.like_post
         db.session.commit()
         return redirect(request.referrer)
