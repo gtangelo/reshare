@@ -1,9 +1,23 @@
 from flask import render_template, request, redirect, url_for, flash, request, jsonify
 from app import app, db, bcrypt
 from app.models import PostData, CommentData, UserData, VoteData, PurchaseHistory
-from app.forms import LoginUser, RegisterUser, CreatePost, CreateComment
+from app.forms import LoginUser, RegisterUser, CreatePost, UpdatePost, CreateComment
 from flask_login import login_user, login_required, logout_user, current_user
 
+from PIL import Image
+import secrets
+import os
+
+def save_img(img):
+    hex = secrets.token_hex(8)
+    _, ext = os.path.splitext(img.filename)
+    img_name = hex + ext
+    img_path = os.path.join(app.root_path, 'static/images/', img_name)
+    size = (250, 250)
+    i = Image.open(img)
+    i.thumbnail(size)
+    i.save(img_path)
+    return img_name
 
 # Index Page
 @app.route('/')
@@ -45,19 +59,29 @@ def display_post(id):
 
 # Allows user of the post to edit its contents
 @app.route('/home/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
 def edit_post(id):
     post = PostData.query.get_or_404(id)
-    if request.method == 'POST':
-        post.title = request.form['title'] if request.form['title'] != '' else '[deleted]'
-        post.content = request.form['content'] if request.form['content'] != '' else '[deleted]'
+    form = UpdatePost()
+    if form.validate_on_submit():
+        post.item = form.item.data
+        post.content = form.content.data
+        post.stock = form.stock.data
+        if form.img.data:
+            post.img = save_img(form.img.data)
         db.session.commit()
         flash(f'All changes to the post have been saved', 'success')
-        return redirect(request.referrer)
+        return redirect(url_for('edit_post', id=id))
     else:
-        return render_template('edit.html', post=post)
+        form.item.data = post.item
+        form.content.data = post.content
+        form.stock.data = post.stock
+        form.img.data = post.img
+        return render_template('edit.html', post=post, form=form)
 
 # Deletes user account from database
 @app.route('/user/delete/<int:id>')
+@login_required
 def delete_user(id):
     user = UserData.query.get_or_404(id)
     db.session.delete(user)
@@ -66,6 +90,7 @@ def delete_user(id):
 
 # Deletes the selected post and all comments associated with that post
 @app.route('/post/delete/<int:id>')
+@login_required
 def delete_post(id):
     post = PostData.query.get_or_404(id)
     comments = CommentData.query.filter_by(post_id = id).all()
@@ -77,6 +102,7 @@ def delete_post(id):
 
 # Deletes a specified comment
 @app.route('/post/comment/delete/<int:id>')
+@login_required
 def delete_comment(id):
     comment = CommentData.query.get_or_404(id)
     post_id = comment.post_id
@@ -118,6 +144,7 @@ def login():
     return render_template('login.html', form=form)
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
@@ -157,6 +184,8 @@ def sell():
                             stock=form.stock.data,
                             content=form.content.data, 
                             author = current_user.username)
+        if form.img.data:
+            new_post.img = save_img(form.img.data)
         db.session.add(new_post)
         db.session.commit()
         return redirect(url_for('home'))
@@ -187,6 +216,7 @@ def admin():
 # Keeps track on which posts the user has liked or disliked. Data on 
 # liked/disliked posts are stored in a database
 @app.route('/post/votes/<int:id>', methods=['GET','POST'])
+@login_required
 def manage_votes(id):
     post = PostData.query.get(id)
     if request.method == "GET":
@@ -209,6 +239,7 @@ def manage_votes(id):
 
 # API to return if a post has been voted by the user or not
 @app.route('/post/votes/status/<int:id>')
+@login_required
 def get_vote_status(id):
     post = VoteData.query.filter_by(post_id=id, user_id=current_user.id).first()
     if post:

@@ -2,7 +2,7 @@
 <title>Your Posts</title>
 {% endblock %} {% block body %}
 
-<h1>Your Posts</h1>
+<h1>Your Items</h1>
 <hr />
 
 {%if feed%} {% for post in feed%}
@@ -43,7 +43,7 @@
   </div>
   <br />
   {%endfor%} {%else%}
-  <i> No posts in feed</i>
+  <i> No items have been posted</i>
   <br />
   <br />
   {%endif%} {% endblock %}

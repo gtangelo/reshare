@@ -5,7 +5,7 @@
 {% endblock %} 
 
 {% block body %}
-  <h1>Announcements</h1>
+  <h1>Items For Sale</h1>
   <hr />
 
   {% if feed %} 
@@ -19,6 +19,9 @@
         {% endif %}
           <button class="upvote">Likes: {{post.likes}}</button>
           <button class="devote">Dislikes: {{post.dislikes}}</button>
+        </div>
+        <div>
+          <img class="post-img" src="{{url_for('static', filename='images/' + post.img)}}" />
         </div>
 
         <div id="{{post.id}}">
@@ -52,7 +55,7 @@
       <br/>
     {% endfor %}   
   {% else %}
-    <i> No posts in feed</i>
+    <i> No items for sale</i>
     <br />
   {% endif %}
 {% endblock %}

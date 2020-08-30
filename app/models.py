@@ -12,6 +12,7 @@ class PostData(db.Model):
     date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     likes = db.Column(db.Integer, nullable=False, default=0)
     dislikes = db.Column(db.Integer, nullable=False, default=0)
+    img = db.Column(db.String(20), nullable=False, default='placeholder.jpg')
 
     def __repr__(self):
         return "Post ID: " + str(self.id)

@@ -1,53 +1,62 @@
-{% extends 'base.html' %} {% block head %}
-<title>Feed</title>
-{% endblock %} {% block body %}
-<a class="btn btn-success" href="{{url_for('sell')}}">+ Sell Item</a>
+{% extends 'base.html' %} 
 
-<br />
-<br />
-<h1>Your Feed</h1>
-<hr />
+{% block head %}
+  <title>Feed</title>
+{% endblock %} 
 
-{%if feed%} {% for post in feed%}
-<div class="post-container" id="{{post.id}}">
-  {%if current_user.is_authenticated%}
-  <div class="like-bar">
-    {%else%}
-    <div class="like-bar-view">
-      {%endif%}
-      <button class="upvote">Likes: {{post.likes}}</button>
-      <button class="devote">Dislikes: {{post.dislikes}}</button>
-    </div>
-    <div
-      id="{{post.id}}"
-      style="cursor: pointer"
-      onclick="window.location='{{url_for('display_post', id=post.id)}}';"
-    >
-      <small>Posted by {{post.author}} on </small>
-      <small class="publish-date">{{post.date}}</small>
-      <h3>{{post.item}} @ {{post.stock}}</h3>
-      <hr />
-      <p style="white-space: pre-wrap">{{post.content}}</p>
-      {% if current_user.username == post.author or current_user.username ==
-      "admin"%}
-      <a
-        href="{{url_for('edit_post', id=post.id)}}"
-        class="btn btn-primary btn-sm"
-        >Edit</a
-      >
-      &nbsp
-      <a
-        href="{{url_for('delete_post', id=post.id)}}"
-        class="btn btn-danger btn-sm"
-        >Delete</a
-      >
-      {%endif%}
-    </div>
-  </div>
-  <br />
-  {%endfor%} {%else%}
-  <i> No posts in feed</i>
+{% block body %}
+  <a class="btn btn-success" href="{{url_for('sell')}}">+ Sell Item</a>
+
   <br />
   <br />
-  {%endif%} {% endblock %}
-</div>
+  <h1>Items for Sale</h1>
+  <hr />
+
+  {% if feed %} 
+    {% for post in feed %}
+      <div id="{{post.id}}" class="post-container">
+
+        {% if current_user.is_authenticated %}
+        <div class="like-bar">
+        {% else %}
+        <div class="like-bar-view">
+        {% endif %}
+          <button class="upvote">Likes: {{post.likes}}</button>
+          <button class="devote">Dislikes: {{post.dislikes}}</button>
+        </div>
+
+        <div id="{{post.id}}">
+          <small>Posted by {{post.author}} on </small>
+          <small class="publish-date">{{post.date}}</small>
+          <h4>Item Selling: {{post.item}}</h4>
+          <h4>Stock: {{post.stock}}</h4>
+          <a class="btn btn-primary" href="{{url_for('display_post', id=post.id)}}">
+            View Item
+          </a>
+          &nbsp
+          {% if post.stock == 0 %}
+            <i>Sold out!</i>
+          {% else %}
+            {% if current_user.is_authenticated and post.author != current_user.username %}
+              <a class="btn btn-primary" href="{{url_for('buy', id=post.id)}}">
+                Buy Item
+              </a>
+            {% elif not current_user.is_authenticated%}
+              <a class="btn btn-primary" href="{{url_for('register')}}">
+                Sign up to buy item
+              </a>
+            {% endif %}
+          {% endif %}
+
+          <hr />
+          <p style="white-space: pre-wrap">{{post.content}}</p>
+          
+        </div>
+      </div>
+      <br/>
+    {% endfor %}   
+  {% else %}
+    <i> No items for sale</i>
+    <br />
+  {% endif %}
+{% endblock %}

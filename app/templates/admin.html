@@ -1,64 +1,70 @@
-{% extends 'base.html' %} {% block head %}
-<title>Repost - Admin Panel</title>
-{% endblock %} {% block body %}
-<h1>Admin Panel</h1>
-<hr />
-<div id="admin-tabs" class="tab-list">
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a id="tab-1" class="nav-link active">Posts</a>
-    </li>
-    <li class="nav-item">
-      <a id="tab-2" class="nav-link">Users</a>
-    </li>
-  </ul>
-</div>
-<br />
-<div id="posts-tab">
-  {%if feed%} {% for post in feed%}
-  <div
-    id="{{post.id}}"
-    style="cursor: pointer;"
-    onclick="window.location='{{url_for('display_post', id=post.id)}}';"
-  >
-    <h3>{{post.title}}</h3>
-    <small>Posted by {{post.author}} on </small>
-    <small class="publish-date">{{post.date}}</small>
-    <br />
-    <br />
-    <p style="white-space: pre-wrap;">{{post.content}}</p>
-    {% if current_user.username == post.author or current_user.username ==
-    "admin"%}
-    <a href="/home/edit/{{post.id}}" class="btn btn-primary btn-sm">Edit</a>
-    &nbsp
-    <a href="/home/delete/{{post.id}}" class="btn btn-danger btn-sm">Delete</a>
-    <br />
-    {%endif%}
-    <hr />
+{% extends 'base.html' %}
+
+{% block head %}
+<title>ReShare - Admin Panel</title>
+{% endblock %} 
+
+{% block body %}
+  <h1>Admin Panel</h1>
+  <hr />
+  <div id="admin-tabs" class="tab-list">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a id="tab-1" class="nav-link active">Items</a>
+      </li>
+      <li class="nav-item">
+        <a id="tab-2" class="nav-link">Users</a>
+      </li>
+    </ul>
   </div>
-  {%endfor%} {%else%}
   <br />
-  <i> No posts in feed</i>
-  {%endif%}
-</div>
-<div id="users-tab" style="display: none;">
-  {%if users%} {% for user in users%}
-  <div>
-    <h3>User ID: {{user.id}}</h3>
-    <p>Username: {{user.username}}</p>
-    {%if current_user.username == "admin" %}
-    <a
-      class="btn btn-danger btn-sm"
-      href="{{url_for('delete_user', id=user.id)}}"
-      >Delete User</a
-    >
+  <div id="posts-tab">
+    {%if feed%} 
+      {% for post in feed%}
+      <div
+        id="{{post.id}}"
+        class="post-container"
+        style="cursor: pointer;"
+        onclick="window.location='{{url_for('display_post', id=post.id)}}';"
+      >
+        <small>Seller: {{post.author}}</small>
+        <small>Posted on </small>
+        <small class="publish-date">{{post.date}}</small>
+        <h5>Item: {{post.item}}</h5>
+        <h5>Current Stock: {{post.stock}}</h5>
+        <h6>Description:</h6>
+        <p style="white-space: pre-wrap;">{{post.content}}</p>
+        <hr />
+        <a href="/home/edit/{{post.id}}" class="btn btn-primary btn-sm">Update</a>
+        &nbsp
+        <a href="/home/delete/{{post.id}}" class="btn btn-danger btn-sm">Delete</a>
+        <br />
+      </div>
+      <br/>
+      {%endfor%} 
+    {%else%}
+      <br />
+      <i> No posts in feed</i>
     {%endif%}
-    <hr />
   </div>
-  {%endfor%} {%else%}
+  <div id="users-tab" style="display: none;">
+    {%if users%} 
+      {% for user in users%}
+        <div class="post-container">
+          <h5>User ID: {{user.id}}</h5>
+          <h5>Username: {{user.username}}</h5>
+          <hr />
+          <a
+            class="btn btn-danger btn-sm"
+            href="{{url_for('delete_user', id=user.id)}}"
+            >Delete User</a
+          >
+        </div>
+      {%endfor%} 
+    {%else%}
+      <br />
+      <i>No user accounts in system</i>
+    {%endif%}
+  </div>
   <br />
-  <i>No user accounts in system</i>
-  {%endif%}
-</div>
-<br />
 {% endblock %}

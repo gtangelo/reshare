@@ -8,7 +8,7 @@
   <h1>Sell Item</h1>
   <hr />
 
-  <form method="POST" action="">
+  <form method="POST" action="" enctype="multipart/form-data">
     {{form.hidden_tag()}}
       <div class="form-group row">
         {{form.item.label(class="col-sm-2 col-form-label-lg")}}
@@ -43,6 +43,15 @@
       <div class="form-group">
         {{form.content.label(class="col-form-label-lg")}}
         {{form.content(class="form-control", rows="4")}}
+      </div>
+      <div class="form-group">
+        {{form.img.label()}}
+        {{form.img(class="form-control-file")}}
+        {% if form.img.errors %}
+          {% for error in form.img.errors %}
+            <span class="text-danger">{{error}}</span>
+          {% endfor %}
+        {% endif %}
       </div>
     <div class="form-group">{{form.submit(class="btn btn btn-success")}}</div>
   </form>

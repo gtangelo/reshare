@@ -6,28 +6,58 @@
 <a
   class="btn btn-primary btn-sm"
   href="{{url_for('home')}}"
-  onclick="history.go(-1)"
   >Go Back to Feed</a
 >
-<form action="/home/edit/{{post.id}}" method="POST">
-  <div class="form-group">
-    <label class="col-form-label-lg">Post Title</label>
-    <input
-      class="form-control"
-      type="text"
-      name="title"
-      value="{{post.title}}"
-    />
-  </div>
-  <div class="form-group">
-    <label class="col-form-label-lg">Post Title</label>
-    <textarea class="form-control" name="content" rows="5">
-{{post.content}}</textarea
-    >
-  </div>
-  <div class="form-group">
-    <input class="btn btn-success btn-sm" type="submit" value="Save Post" />
-  </div>
+<br/>
+<br/>
+<form method="POST" action="" enctype="multipart/form-data">
+  {{form.hidden_tag()}}
+    <div class="form-group row">
+      {{form.item.label(class="col-sm-2 col-form-label-lg")}}
+      {% if form.item.errors %}
+        {{form.item(class="form-control is-invalid")}}
+        <div class="invalid-feedback">
+          {%for error in form.item.errors%}
+          <span>{{error}}</span>
+          {%endfor%}
+        </div>
+      {% else %} 
+        <div class="col-sm-10">
+          {{form.item(class="form-control")}} 
+        </div>
+      {% endif %}
+    </div>
+    <div class="form-group row">
+      {{form.stock.label(class="col-sm-2 col-form-label-lg")}} 
+      {% if form.stock.errors %}
+        {{form.stock(class="form-control is-invalid")}}
+        <div class="invalid-feedback">
+          {% for error in form.stock.errors %}
+          <span>{{error}}</span>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="col-sm-10">
+          {{form.stock(class="form-control ")}}
+        </div>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      {{form.content.label(class="col-form-label-lg")}}
+      {{form.content(class="form-control", rows="4")}}
+    </div>
+    <div class="form-group">
+      <label>Current Image</label>
+      <img class="post-img" src="{{url_for('static', filename='images/' + form.img.data)}}" />
+      {{form.img.label()}}
+      {{form.img(class="form-control-file")}}
+      {% if form.img.errors %}
+        {% for error in form.img.errors %}
+          <span class="text-danger">{{error}}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
+  <div class="form-group">{{form.submit(class="btn btn btn-success")}}</div>
 </form>
 <br />
 

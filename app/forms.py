@@ -1,6 +1,8 @@
 from app.models import UserData
 
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
+from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, NumberRange
 
@@ -28,7 +30,16 @@ class CreatePost(FlaskForm):
     item = StringField('Item', validators=[DataRequired(message="Item Required"), Length(min=2, max=100)])
     stock = IntegerField('Number of Stock', validators=[DataRequired(), NumberRange(min=0, message="Number Required")])
     content = TextAreaField('Item Description', validators=[DataRequired(), Length(min=1)])
+    img = FileField('Item Image', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Create Post')
+
+# Form class when user wants to update a post on the forum
+class UpdatePost(FlaskForm):
+    item = StringField('Item', validators=[DataRequired(message="Item Required"), Length(min=2, max=100)])
+    stock = IntegerField('Number of Stock', validators=[DataRequired(), NumberRange(min=0, message="Number Required")])
+    content = TextAreaField('Item Description', validators=[DataRequired(), Length(min=1)])
+    img = FileField('Item Image', validators=[FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Update Post')
 
 # Form class when user wants to create a comment of a post
 class CreateComment(FlaskForm):
