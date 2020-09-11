@@ -127,6 +127,7 @@ def register():
     else:
         return render_template('register.html', form=form)
 
+# Login Page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginUser()
@@ -144,12 +145,14 @@ def login():
             flash('Login Failed. Incorrect username or password', 'danger')
     return render_template('login.html', form=form)
 
+# Logout route
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# Allows user to buy items
 @app.route('/buy/<int:id>', methods=['GET', 'POST'])
 @login_required
 def buy(id):
@@ -173,6 +176,7 @@ def buy(id):
             return render_template('bought.html', post=post) 
         return render_template('buy.html', post=post) 
 
+# Allows users to sell items
 @app.route('/sell', methods=['GET', 'POST'])
 @login_required
 def sell():
@@ -187,13 +191,13 @@ def sell():
             new_post.img = save_img(form.img.data)
         db.session.add(new_post)
         db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for('user_posts'))
     else:
         # Get post from db and order it by most voted posts in descending order
         feed_posts = PostData.query.order_by(PostData.likes.desc()).all()
         return render_template("sell.html", form=form, feed=feed_posts)
 
-
+# View all purchases that the user has made
 @app.route('/purchase_history')
 @login_required
 def purchase_history():
