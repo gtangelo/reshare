@@ -16,11 +16,11 @@ This web application is meant to be a simplified version of other selling platfo
 - Vanilla Javascript for client side DOM manipulation
 
 # Setup
-*Important Note: A bug exist where images may not be shown to the user.*
-Users can either visit the hosted version at http://reshare.azurewebsites.net/ or simply setup this locally with these steps:
+*Important Note: A bug exist where images may not be shown to the user.*\
+Users can either visit the hosted version at http://reshare.azurewebsites.net/ or simply setup this website up locally with these steps:
 1) Clone the repository locally
 `git clone https://github.com/gtangelo/ReShare.git`
-2) Set up virtual environment inside the directory by using the following commands (linux):
+2) Set up virtual environment inside the directory by using the following commands (linux):\
 `python3 -m virtualenv venv`\
 `source venv/bin/activate`\
 `pip3 install -r requirements.txt`\
