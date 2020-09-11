@@ -21,10 +21,10 @@ Users can either visit the hosted version at http://reshare.azurewebsites.net/ o
 1) Clone the repository locally
 `git clone https://github.com/gtangelo/ReShare.git`
 2) Set up virtual environment inside the directory by using the following commands (linux):
-`python3 -m virtualenv venv`
-`source venv/bin/activate`
-`pip3 install -r requirements.txt`
-`python3 run.py`
+`python3 -m virtualenv venv`\
+`source venv/bin/activate`\
+`pip3 install -r requirements.txt`\
+`python3 run.py`\
 Then open ReShare at your localhost (i.e. http://127.0.0.1:5001/)
 
 # Features of ReShare
