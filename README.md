@@ -1,5 +1,7 @@
 # ReShare
 
+DISCLAIMER: Project is not active anymore.
+
 ReShare is a simple web application that is designed as a trading/sharing platform between users. It uses Python Flask as its infrastructure to allow users to create an account, sell or buy items. 
 
 As seen with the recent COVID-19 pandemic, common household items such as toilet paper can be made scarce. Therefore, the purpose of ReShare is to act as a simple trading platform, where users who are feeling generous can post up items as donations to other users seeking these items immediately. With the scarcity of some products, all users are only able to purchase one item to prevent scalping of such items.
@@ -17,7 +19,7 @@ This web application is meant to be a simplified version of other selling platfo
 
 # Setup
 *Important Note: A bug exist where images may not be shown to the user.*\
-Users can either visit the hosted version at http://reshare.azurewebsites.net/ or simply setup this website up locally with these steps:
+Users can ~~either visit the hosted version at http://reshare.azurewebsites.net/ or~~ (hosted website no longer available) simply setup this website up locally with these steps:
 1) Clone the repository locally
 `git clone https://github.com/gtangelo/ReShare.git`
 2) Set up virtual environment inside the directory by using the following commands (linux):\
