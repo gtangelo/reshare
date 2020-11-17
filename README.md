@@ -1,6 +1,6 @@
 # ReShare
 
-DISCLAIMER: Project is not active anymore.
+**DISCLAIMER: Project is not active anymore.**
 
 ReShare is a simple web application that is designed as a trading/sharing platform between users. It uses Python Flask as its infrastructure to allow users to create an account, sell or buy items. 
 
